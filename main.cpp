@@ -8,8 +8,6 @@
 #include <cstdlib> 
 
 
-
-
 // //imported a thread unfortunately so that 'ENTER' key can stop while loop on windows & macOS
 #include <thread>
 #include <chrono>
@@ -31,14 +29,6 @@ int main(){
 
     //vector storing current working-on path of coordinates
     vector<Coordinate> current_path_coordinates;
-
-    //variable storing the current position of the drone (inital position)
-    //moved current position to Problem.h cause i highkey don't think it needs to be here
-    //Coordinate curr_position = {0,0};
-
-    //variable storing the final path distance 
-    //float for easier calculation, output round up (ceiling) int for output files !!
-    float final_distance = numeric_limits<float>::max();
 
     //directly put in the file (x y) coords into temp variables
     float temp_x_coord;
@@ -128,20 +118,13 @@ int main(){
 
         // printing out initial statement only once
         if (printInitialStatement == 0) {
-            cout << "There are " << current_path_coordinates.size() << " nodes, computing route..\n";
-            cout << "     Shortest Route Discovered So Far " << endl;
-
+            cout << "There are " << current_path_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
             printInitialStatement = 1;
-
         }
 
         
         // testing path's total distance and trying to swap to find better path
         hc.makingPath(current_path_coordinates, final_path_coordinates, stop_loop);
-        // if (newDist < final_distance) {
-        //     final_distance = newDist;
-        //     cout << "Found new distance: " << final_distance << endl;
-        // }
         this_thread::sleep_for(chrono::milliseconds(500));
     }
 
