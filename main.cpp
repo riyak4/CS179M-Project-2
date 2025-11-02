@@ -16,6 +16,59 @@
 
 using namespace std;
 
+vector<Coordinate> kmeans(vector<Coordinate>& points, int k, int max_iterations){
+    int n = points.size();
+    vector<Coordinate> centroids;
+    vector<int> labels(n, -1);
+    HillClimbing cluster;
+
+    for (int i = 0; i < k; ++i) {
+        centroids.push_back(points[rand() % n]);
+    }
+
+    for (int iter = 0; iter < max_iterations; ++iter) {
+        bool changed = false;
+
+        for (int i = 0; i < n; ++i) {
+            float min_dist = numeric_limits<float>::max();
+            int best_cluster = -1;
+
+            for (int j = 0; j < k; ++j) {
+                float dist = cluster.computeEuclideanDistance(points[i], centroids[j]);
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    best_cluster = j;
+                }
+            }
+
+            if (labels[i] != best_cluster) {
+                labels[i] = best_cluster;
+                changed = true;
+            }
+        }
+
+        if (!changed) break;
+
+        vector<Coordinate> new_centroids(k, {0.0f, 0.0f});
+        vector<int> counts(k, 0);
+
+        for (int i = 0; i < n; ++i) {
+            new_centroids[labels[i]].x += points[i].x;
+            new_centroids[labels[i]].y += points[i].y;
+            counts[labels[i]]++;
+        }
+
+        for (int j = 0; j < k; ++j) {
+            if (counts[j] > 0) {
+                new_centroids[j].x /= counts[j];
+                new_centroids[j].y /= counts[j];
+            }
+        }
+
+        centroids = new_centroids;
+    }
+}
+
 int main(){
     //variable for 'Enter' command to stop the while loop
     atomic<bool> stop_loop{false};
