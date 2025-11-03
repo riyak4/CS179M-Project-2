@@ -16,46 +16,50 @@
 
 using namespace std;
 
-vector<Coordinate> kmeans(vector<Coordinate>& points, int k, int max_iterations){
-    int n = points.size();
-    vector<Coordinate> centroids;
-    vector<int> labels(n, -1);
-    HillClimbing cluster;
+vector<int> kmeans(vector<Coordinate>& coordinates, int k, int max_iterations){
+    int n = coordinates.size(); //size of given vector 
+    vector<Coordinate> centroids;  //vector to store centroids
+    vector<int> droneAssignment(n, -1);  //vector to store drone # for each point
+    HillClimbing cluster; //hill climbing object for distance calculation
 
+    //randomly initializing centroids
     for (int i = 0; i < k; ++i) {
-        centroids.push_back(points[rand() % n]);
+        centroids.push_back(coordinates[rand() % n]);
     }
 
+    //trying to cluster for 100 iterations or until final cluster assignment found
     for (int iter = 0; iter < max_iterations; ++iter) {
-        bool changed = false;
+        bool changed = false; //flag to check if any point changed its cluster, if it did not, we break and move on 
 
+        //for looping each point and group them to the nearest centroid/drone
         for (int i = 0; i < n; ++i) {
             float min_dist = numeric_limits<float>::max();
             int best_cluster = -1;
 
             for (int j = 0; j < k; ++j) {
-                float dist = cluster.computeEuclideanDistance(points[i], centroids[j]);
+                float dist = cluster.computeEuclideanDistance(coordinates[i], centroids[j]);
                 if (dist < min_dist) {
                     min_dist = dist;
                     best_cluster = j;
                 }
             }
 
-            if (labels[i] != best_cluster) {
-                labels[i] = best_cluster;
+            if (droneAssignment[i] != best_cluster) {
+                droneAssignment[i] = best_cluster;
                 changed = true;
             }
         }
 
-        if (!changed) break;
+        if (!changed) break; //if cluster did not change, break out of loop
 
         vector<Coordinate> new_centroids(k, {0.0f, 0.0f});
         vector<int> counts(k, 0);
 
+        //this and next for loop to recalculate centroids using mean of assigned locations
         for (int i = 0; i < n; ++i) {
-            new_centroids[labels[i]].x += points[i].x;
-            new_centroids[labels[i]].y += points[i].y;
-            counts[labels[i]]++;
+            new_centroids[droneAssignment[i]].x += coordinates[i].x;
+            new_centroids[droneAssignment[i]].y += coordinates[i].y;
+            counts[droneAssignment[i]]++;
         }
 
         for (int j = 0; j < k; ++j) {
@@ -67,6 +71,8 @@ vector<Coordinate> kmeans(vector<Coordinate>& points, int k, int max_iterations)
 
         centroids = new_centroids;
     }
+
+    return droneAssignment; //returning vector of assigned drones for each point
 }
 
 int main(){
@@ -149,40 +155,50 @@ int main(){
     HillClimbing hc; //hill climbing object
 
 
+
     // clear input buffer before starting thread to capture 'ENTER' key
     cin.clear();
     cin.sync();
 
-    thread tracker_thread([&]{
-        string dummy;
-        getline(cin, dummy);
-        //tells the main loop to stop
-        stop_loop.store(true);     
-    });
-    //using count for the time being of testing the loop
+    // thread tracker_thread([&]{
+    //     string dummy;
+    //     getline(cin, dummy);
+    //     //tells the main loop to stop
+    //     stop_loop.store(true);     
+    // });
 
     //in the while loop, is where the search function will be called and output final distances
-    int count = 0;
     int printInitialStatement = 0;
+   
+    //creating a path to start with 
+    current_path_coordinates = hc.restartPath(total_coordinates);
 
-    while (!stop_loop.load()) {
-        //creating a path to start with 
-        current_path_coordinates = hc.restartPath(total_coordinates);
-
-        // printing out initial statement only once
-        if (printInitialStatement == 0) {
-            cout << "There are " << current_path_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
-            printInitialStatement = 1;
-        }
-
-        
-        // testing path's total distance and trying to swap to find better path
-        hc.makingPath(current_path_coordinates, final_path_coordinates, stop_loop);
-        this_thread::sleep_for(chrono::milliseconds(500));
+    // printing out initial statement only once
+    if (printInitialStatement == 0) {
+        cout << "There are " << current_path_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
+        printInitialStatement = 1;
     }
 
+    
+    // testing path's total distance and trying to swap to find better path
+    hc.makingPath(current_path_coordinates, final_path_coordinates);
 
-    if (tracker_thread.joinable()) tracker_thread.join();
+    for (int i = 1; i < 4; i++) { //each loop = different number of drones 
+        vector<int> assignments = kmeans(total_coordinates, i, 100);
+        float total_distance = 0.0f;
+        if (i == 1) {
+            total_distance = hc.bestDistance;
+        }
+        cout << i << ") If you use " << i << " drone(s), the total route will be _______ meters" << endl; //GET TOTAL DISTANCE OF ALL DRONES' PATHS
+        //calculate the distance of each group, sum it to printout total route 
+        //printing final route stuff for each drone #
+    }
+
+    // this_thread::sleep_for(chrono::milliseconds(500));
+    
+
+
+    // if (tracker_thread.joinable()) tracker_thread.join();
 
    
     cout << endl;

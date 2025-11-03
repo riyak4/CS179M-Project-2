@@ -20,15 +20,16 @@ vector<Coordinate> HillClimbing::restartPath(vector<Coordinate>& total) {
   mt19937 g(rd());
   
   // don't shuffle the landing pad coord in
-  shuffle(newpath.begin()+1, newpath.end(), g);
-  // append the landing pad coord in to circle back
-  newpath.push_back({total[0].x, total[0].y});
+  shuffle(newpath.begin(), newpath.end(), g);
+
+  // // append the landing pad coord in to circle back
+  // newpath.push_back({total[0].x, total[0].y});
 
   return newpath;
 }
 
 // creating the path - includes swapping, restarting 
-vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<Coordinate>& finalPath, atomic<bool>& stop_loop) { 
+vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<Coordinate>& finalPath) { 
   // creating distance matrix and hashmap
   ComputeMatrix(newpath);
   LoadHashmap(newpath);
@@ -44,7 +45,7 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<C
     }
     finalPath = bestPath; //saving to global variable for image 
 
-    cout << "          " << bestDistance << endl;
+    // cout << "          " << bestDistance << endl;
   }
 
   
@@ -52,21 +53,21 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<C
   int pathSize = newpath.size();
 
   bool improved = true;
-  while (improved && !stop_loop.load()) {
+  while (improved) {
     improved = false;
     // 2 for loops to go through each pair for swapping, using 2-opt loop
-    for (int i = 1; i < pathSize - 2; i++) {
-      for (int j = i + 1; j < pathSize - 1; j++) {
+    for (int i = 0; i < pathSize - 1; i++) {
+      for (int j = i + 1; j < pathSize; j++) {
 
         //Check if stop signal received
-        if(stop_loop.load()) {
-          return newpath;
-        }
+        // if(stop_loop.load()) {
+        //   return newpath;
+        // }
         reverse(newpath.begin() + i, newpath.begin() + j + 1);
         distance = getTotalDistance(newpath);
         if (distance < bestDistance) {
           bestDistance = distance;
-          cout << "          " << bestDistance << endl;
+          //cout << "          " << bestDistance << endl;
           //updating new best path
           bestPath.clear();
           for ( int k = 0; k < newpath.size() ; k++) {
@@ -82,49 +83,8 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<C
     }
   }
   
- 
+  cout << "the total route will be " << bestDistance << endl;
   return newpath;
-}
-
-// creating the path TIMED - includes swapping, restarting 
-vector<Coordinate> HillClimbing::makingPathForRuns(vector<Coordinate> newpath, chrono::time_point<chrono::high_resolution_clock> start, double duration) { 
-  // creating distance matrix and hashmap
-  ComputeMatrix(newpath);
-  LoadHashmap(newpath);
-
-
-  float distance = getTotalDistance(newpath);
-  if (distance < bestDistance) {
-    bestDistance = distance;
-    bestPath.clear();
-    for ( int i = 0; i < newpath.size() ; i++) {
-      bestPath.push_back({newpath[i].x, newpath[i].y});
-    }
-
-    cout << "          " << bestDistance << endl;
-  }
-
-  
-  while (true) {
-    int index = 1;
-    while(index < newpath.size() - 2) {
-      swap(newpath[index], newpath[newpath.size()-2]);
-      distance = getTotalDistance(newpath);
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        cout << "          " << bestDistance << endl;
-        bestPath.clear();
-        for ( int i = 0; i < newpath.size() ; i++) {
-          bestPath.push_back({newpath[i].x, newpath[i].y});
-        }
-      }
-      index++;
-      auto end = chrono::high_resolution_clock::now();
-        double elapsed = chrono::duration<double>(end - start).count();
-        if (elapsed >= duration) return newpath;
-    }
-  }
-  //return newpath;
 }
 
 
