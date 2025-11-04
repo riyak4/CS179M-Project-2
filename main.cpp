@@ -152,14 +152,15 @@ int main(){
 
 
 
-        // printing out initial statement only once
+    // starting print statement 
     cout << "There are " << total_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
 
+    // temperary variables for drone object
     float temp_distance = numeric_limits<float>::max();
     Coordinate temp_centroid = {0.0, 0.0};
     vector<Coordinate> temp_best_path;
 
-
+    //-------------doing drone 1 path outside for loop --------------------
     current_path_coordinates = hc.restartPath(total_coordinates);
 
     
@@ -173,10 +174,19 @@ int main(){
         sumY += coord.y;
     }
 
-    temp_centroid = {sumX / hc.bestPath.size(), sumY / hc.bestPath.size()};
-    Drone drone1(hc.bestPath, temp_centroid, temp_distance);
-    cout << drone1.centroid.x << ", " << drone1.centroid.y << endl;
+    temp_centroid = {sumX / temp_best_path.size(), sumY / temp_best_path.size()};
+    Drone drone1(temp_best_path, temp_centroid, temp_distance);
+     
+    // resetting temp variables for next drone
+    temp_distance = numeric_limits<float>::max();
+    temp_centroid = {0.0, 0.0};
+    temp_best_path.clear();
+    //----------------------------------------------------------------------
 
+    // for loop for looping through 2-4 drones 
+    for (int droneNum = 2; droneNum <= 4; droneNum++) {
+        
+    }
     this_thread::sleep_for(chrono::milliseconds(500));
 
    
