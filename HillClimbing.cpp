@@ -20,72 +20,54 @@ vector<Coordinate> HillClimbing::restartPath(vector<Coordinate>& total) {
   mt19937 g(rd());
   
   // don't shuffle the landing pad coord in
-  shuffle(newpath.begin(), newpath.end(), g);
-
-  // // append the landing pad coord in to circle back
-  // newpath.push_back({total[0].x, total[0].y});
+  shuffle(newpath.begin()+1, newpath.end(), g);
+  // append the landing pad coord in to circle back
+  newpath.push_back({total[0].x, total[0].y});
 
   return newpath;
 }
 
 // creating the path - includes swapping, restarting 
-vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> restartedPath, float& droneDistance) { 
-  // creating distance matrix and hashmap
-  ComputeMatrix(restartedPath);
-  LoadHashmap(restartedPath);
+vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath) { 
 
-
-  float localBestDistance = numeric_limits<float>::max();
-
-  float distance = getTotalDistance(restartedPath);
-  if (distance < localBestDistance) {
-    localBestDistance = distance;
+  float distance = getTotalDistance(newpath);
+  if (distance < bestDistance) {
+    bestDistance = distance;
     bestPath.clear();
-    for ( int i = 0; i < restartedPath.size() ; i++) {
-      bestPath.push_back({restartedPath[i].x, restartedPath[i].y});
-    }
-    // cout << "          " << bestDistance << endl;
+    bestPath = newpath;
   }
 
   
   // swapping 
-  int pathSize = restartedPath.size();
+  int pathSize = newpath.size();
 
   bool improved = true;
   while (improved) {
     improved = false;
     // 2 for loops to go through each pair for swapping, using 2-opt loop
-    for (int i = 0; i < pathSize - 1; i++) {
-      for (int j = i + 1; j < pathSize; j++) {
+    for (int i = 1; i < pathSize - 2; i++) {
+      for (int j = i + 1; j < pathSize - 1; j++) {
 
-        //Check if stop signal received
-        // if(stop_loop.load()) {
-        //   return newpath;
-        // }
-        reverse(restartedPath.begin() + i, restartedPath.begin() + j + 1);
-        distance = getTotalDistance(restartedPath);
-        if (distance < localBestDistance) {
-          localBestDistance = distance;
-          //cout << "          " << bestDistance << endl;
-          //updating new best path
+    
+        reverse(newpath.begin() + i, newpath.begin() + j + 1);
+        distance = getTotalDistance(newpath);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+            //updating new best path
           bestPath.clear();
-          for ( int k = 0; k < restartedPath.size() ; k++) {
-            bestPath.push_back({restartedPath[k].x, restartedPath[k].y});
-          }
+          bestPath = newpath;
           improved = true;
         } else {
           // swap back if no improvement
-          reverse(restartedPath.begin() + i, restartedPath.begin() + j + 1);
+          reverse(newpath.begin() + i, newpath.begin() + j + 1);
         }
       }
     }
   }
   
-  droneDistance = localBestDistance;
-  // cout << "the total route will be " << localBestDistance << endl;
-  return bestPath;
+ 
+  return newpath;
 }
-
 
 
 //returning total distance of path
