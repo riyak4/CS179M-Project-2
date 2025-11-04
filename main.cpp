@@ -16,9 +16,9 @@
 
 using namespace std;
 
-vector<int> kmeans(vector<Coordinate>& coordinates, int k, int max_iterations){
+vector<int> kmeans(vector<Coordinate>& coordinates, int k, int max_iterations, vector<Coordinate>& centroids){
     int n = coordinates.size(); //size of given vector 
-    vector<Coordinate> centroids;  //vector to store centroids
+    // vector<Coordinate> centroids;  //vector to store centroids
     vector<int> droneAssignment(n, -1);  //vector to store drone # for each point
     HillClimbing cluster; //hill climbing object for distance calculation
 
@@ -68,10 +68,11 @@ vector<int> kmeans(vector<Coordinate>& coordinates, int k, int max_iterations){
                 new_centroids[j].y /= counts[j];
             }
         }
-
+        cout << "iteration: " << iter << endl;
         centroids = new_centroids;
     }
 
+    cout << "centroid size: " << centroids.size() << endl;
     return droneAssignment; //returning vector of assigned drones for each point
 }
 
@@ -141,7 +142,7 @@ int main(){
 
       // checks number of locations does not exceed 256
     int num_locations = total_coordinates.size();
-    if (num_locations > 256) {
+    if (num_locations > 4096) {
         cout << "Error. Number of locations exceeds 256." << endl;
         return 1;
     }
@@ -170,26 +171,50 @@ int main(){
     //in the while loop, is where the search function will be called and output final distances
     int printInitialStatement = 0;
    
-    //creating a path to start with 
-    current_path_coordinates = hc.restartPath(total_coordinates);
 
     // printing out initial statement only once
     if (printInitialStatement == 0) {
-        cout << "There are " << current_path_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
+        cout << "There are " << total_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT" << endl;
         printInitialStatement = 1;
     }
 
-    
-    // testing path's total distance and trying to swap to find better path
-    hc.makingPath(current_path_coordinates, final_path_coordinates);
-
+    Drone drone1;
+    Drone drone1_2;
+    Drone drone2_2;
+    Drone drone1_3;
+    Drone drone2_3;
+    Drone drone3_3;
+    Drone drone1_4;
+    Drone drone2_4; 
+    Drone drone3_4;
+    Drone drone4_4;
+    vector<Drone> allDrones = {drone1, drone1_2, drone2_2, drone1_3, drone2_3, drone3_3, drone1_4, drone2_4, drone3_4, drone4_4};
+    int droneIndex = 0;
     for (int i = 1; i < 4; i++) { //each loop = different number of drones 
-        vector<int> assignments = kmeans(total_coordinates, i, 100);
-        float total_distance = 0.0f;
-        if (i == 1) {
-            total_distance = hc.bestDistance;
+        cout << "total drone count:  " << i << endl;
+        float sumDistance = 0.0f;
+        vector<Coordinate> centroids;
+        vector<int> assignments = kmeans(total_coordinates, i, 100, centroids);
+
+        for (int j = 0; j < i; j++) { //for each drone 
+            cout << "     drone object count: " << j << endl;
+            allDrones[droneIndex].centroid = centroids[j];
+            for (int m = 0; m < assignments.size(); m++) { //looping through all assignments and putting them in drone object
+                if (assignments[m] == j) {
+                    allDrones[droneIndex].path.push_back(total_coordinates[m]);
+                }
+            }  
+            //creating a path to start with 
+            vector<Coordinate> newPath = allDrones[droneIndex].restartPath(allDrones[droneIndex].path);
+            // finding best path and then saving it to drone object's path 
+            allDrones[droneIndex].path = allDrones[droneIndex].makingPath(newPath, allDrones[droneIndex].bestDistance);
+
+            cout << "       distance: " << allDrones[droneIndex].bestDistance << endl;
+            sumDistance += allDrones[droneIndex].bestDistance;
+            droneIndex++;
         }
-        cout << i << ") If you use " << i << " drone(s), the total route will be _______ meters" << endl; //GET TOTAL DISTANCE OF ALL DRONES' PATHS
+
+        cout << i << ") If you use " << i << " drone(s), the total route will be " << sumDistance << " meters" << endl; //GET TOTAL DISTANCE OF ALL DRONES' PATHS
         //calculate the distance of each group, sum it to printout total route 
         //printing final route stuff for each drone #
     }

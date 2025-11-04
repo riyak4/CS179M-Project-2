@@ -29,28 +29,27 @@ vector<Coordinate> HillClimbing::restartPath(vector<Coordinate>& total) {
 }
 
 // creating the path - includes swapping, restarting 
-vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<Coordinate>& finalPath) { 
+vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> restartedPath, float& droneDistance) { 
   // creating distance matrix and hashmap
-  ComputeMatrix(newpath);
-  LoadHashmap(newpath);
+  ComputeMatrix(restartedPath);
+  LoadHashmap(restartedPath);
 
 
+  float localBestDistance = numeric_limits<float>::max();
 
-  float distance = getTotalDistance(newpath);
-  if (distance < bestDistance) {
-    bestDistance = distance;
+  float distance = getTotalDistance(restartedPath);
+  if (distance < localBestDistance) {
+    localBestDistance = distance;
     bestPath.clear();
-    for ( int i = 0; i < newpath.size() ; i++) {
-      bestPath.push_back({newpath[i].x, newpath[i].y});
+    for ( int i = 0; i < restartedPath.size() ; i++) {
+      bestPath.push_back({restartedPath[i].x, restartedPath[i].y});
     }
-    finalPath = bestPath; //saving to global variable for image 
-
     // cout << "          " << bestDistance << endl;
   }
 
   
   // swapping 
-  int pathSize = newpath.size();
+  int pathSize = restartedPath.size();
 
   bool improved = true;
   while (improved) {
@@ -63,28 +62,28 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, vector<C
         // if(stop_loop.load()) {
         //   return newpath;
         // }
-        reverse(newpath.begin() + i, newpath.begin() + j + 1);
-        distance = getTotalDistance(newpath);
-        if (distance < bestDistance) {
-          bestDistance = distance;
+        reverse(restartedPath.begin() + i, restartedPath.begin() + j + 1);
+        distance = getTotalDistance(restartedPath);
+        if (distance < localBestDistance) {
+          localBestDistance = distance;
           //cout << "          " << bestDistance << endl;
           //updating new best path
           bestPath.clear();
-          for ( int k = 0; k < newpath.size() ; k++) {
-            bestPath.push_back({newpath[k].x, newpath[k].y});
+          for ( int k = 0; k < restartedPath.size() ; k++) {
+            bestPath.push_back({restartedPath[k].x, restartedPath[k].y});
           }
-          finalPath = bestPath; //saving to global variable for image 
           improved = true;
         } else {
           // swap back if no improvement
-          reverse(newpath.begin() + i, newpath.begin() + j + 1);
+          reverse(restartedPath.begin() + i, restartedPath.begin() + j + 1);
         }
       }
     }
   }
   
-  cout << "the total route will be " << bestDistance << endl;
-  return newpath;
+  droneDistance = localBestDistance;
+  // cout << "the total route will be " << localBestDistance << endl;
+  return bestPath;
 }
 
 

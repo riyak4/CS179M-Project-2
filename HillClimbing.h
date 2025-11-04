@@ -41,14 +41,10 @@ struct CoordinateHash {
     }
 };
 
-class HillClimbing {
-    private:
-        vector<vector<float>> distance_matrix;
-        //hash map 
-        unordered_map<Coordinate, int, CoordinateHash> coordinate_indexes; 
+class HillClimbing { 
     public: 
         //testing distance of path and swapping 
-        vector<Coordinate> makingPath(vector<Coordinate> newpath, vector<Coordinate>& finalPath);
+        vector<Coordinate> makingPath(vector<Coordinate> newpath, float& droneDistance);
 
         //creating a whole new random path 
         vector<Coordinate> restartPath(vector<Coordinate>& total);
@@ -67,17 +63,18 @@ class HillClimbing {
 
         //public variables to store best path and distance used in main 
         vector<Coordinate> bestPath;
-        // vector bestPath1/2  1
-        // vector bestPath2/2  2
-        // vector bestpath1/3  3
-        // vector bestpath2/3  4
-        // vector bestpath3/3  5
-        // vector bestpath1/4  6
-        // vector bestpath2/4  7
-        // vector bestpath3/4  8
-        // vector bestpath4/4  9
 
         float bestDistance = numeric_limits<float>::max();
+
+        vector<vector<float>> distance_matrix;
+        //hash map 
+        unordered_map<Coordinate, int, CoordinateHash> coordinate_indexes;
+};
+
+struct Drone : public HillClimbing {
+    vector<Coordinate> path;
+    Coordinate centroid;
+    float bestDistance = numeric_limits<float>::max();
 };
 
 #endif
