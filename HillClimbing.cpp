@@ -28,11 +28,11 @@ vector<Coordinate> HillClimbing::restartPath(vector<Coordinate>& total) {
 }
 
 // creating the path - includes swapping, restarting 
-vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath) { 
+vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& temp_distance) { 
 
   float distance = getTotalDistance(newpath);
-  if (distance < bestDistance) {
-    bestDistance = distance;
+  if (distance < temp_distance) {
+    temp_distance = distance;
     bestPath.clear();
     bestPath = newpath;
   }
@@ -41,32 +41,32 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath) {
   // swapping 
   int pathSize = newpath.size();
 
-  bool improved = true;
-  while (improved) {
-    improved = false;
+  
     // 2 for loops to go through each pair for swapping, using 2-opt loop
-    for (int i = 1; i < pathSize - 2; i++) {
-      for (int j = i + 1; j < pathSize - 1; j++) {
+    for (int i = 1; i < pathSize - 2; i = i + 2) {
+
+      for (int j = i + 1; j < pathSize - 1; j= j+ 2) {
 
     
         reverse(newpath.begin() + i, newpath.begin() + j + 1);
         distance = getTotalDistance(newpath);
-        if (distance < bestDistance) {
-          bestDistance = distance;
+        if (distance < temp_distance) {
+          temp_distance = distance;
             //updating new best path
           bestPath.clear();
           bestPath = newpath;
-          improved = true;
         } else {
           // swap back if no improvement
           reverse(newpath.begin() + i, newpath.begin() + j + 1);
         }
+
       }
+      cout << "done with i = " << i << endl;
     }
-  }
+
   
  
-  return newpath;
+  return bestPath;
 }
 
 

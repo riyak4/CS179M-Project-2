@@ -49,8 +49,7 @@ class HillClimbing {
         unordered_map<Coordinate, int, CoordinateHash> coordinate_indexes; 
     public: 
         //testing distance of path and swapping 
-        vector<Coordinate> makingPath(vector<Coordinate> newpath);
-        vector<Coordinate> makingPathForRuns(vector<Coordinate> newpath, chrono::time_point<chrono::high_resolution_clock> start, double duration);
+        vector<Coordinate> makingPath(vector<Coordinate> newpath, float& temp_distance);
 
         //creating a whole new random path 
         vector<Coordinate> restartPath(vector<Coordinate>& total);

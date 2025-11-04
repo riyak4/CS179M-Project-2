@@ -16,7 +16,7 @@
 
 using namespace std;
 
-vector<Coordinate> kmeans(vector<Coordinate>& points, int k, int max_iterations){
+vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations){
     int n = points.size();
     vector<Coordinate> centroids;
     vector<int> labels(n, -1);
@@ -67,6 +67,8 @@ vector<Coordinate> kmeans(vector<Coordinate>& points, int k, int max_iterations)
 
         centroids = new_centroids;
     }
+
+    return labels;
 }
 
 int main(){
@@ -148,91 +150,96 @@ int main(){
     hc.ComputeMatrix(total_coordinates);
     hc.LoadHashmap(total_coordinates);
 
-    // clear input buffer before starting thread to capture 'ENTER' key
-    cin.clear();
-    cin.sync();
 
-    //using count for the time being of testing the loop
 
-    //in the while loop, is where the search function will be called and output final distances
-    int count = 0;
-    int printInitialStatement = 0;
+        // printing out initial statement only once
+    cout << "There are " << total_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
+
+    float temp_distance = numeric_limits<float>::max();
+    Coordinate temp_centroid = {0.0, 0.0};
+    vector<Coordinate> temp_best_path;
 
 
     current_path_coordinates = hc.restartPath(total_coordinates);
 
-        // printing out initial statement only once
-        if (printInitialStatement == 0) {
-            cout << "There are " << current_path_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT";
-            printInitialStatement = 1;
-        }
+    
+    // testing path's total distance and trying to swap to find better path
+    temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
 
-        
-        // testing path's total distance and trying to swap to find better path
-        hc.makingPath(current_path_coordinates, final_path_coordinates);
-        this_thread::sleep_for(chrono::milliseconds(500));
+    float sumX;
+    float sumY;
+    for (const auto& coord : hc.bestPath) {
+        sumX += coord.x;
+        sumY += coord.y;
+    }
+
+    temp_centroid = {sumX / hc.bestPath.size(), sumY / hc.bestPath.size()};
+    Drone drone1(hc.bestPath, temp_centroid, temp_distance);
+    cout << drone1.centroid.x << ", " << drone1.centroid.y << endl;
+
+    this_thread::sleep_for(chrono::milliseconds(500));
 
    
     cout << endl;
 
     /* WRITING TO COORDINATE FILE */
 
-    string fileNameCoords = "coords.txt";
-    string imageFileName = input_file.substr(0, input_file.length() - 4) + "_SOLUTION_" + to_string(static_cast<int>(ceil(hc.bestDistance))) + ".png";
-    ofstream outputCoords(fileNameCoords);
+    // string fileNameCoords = "coords.txt";
+    // string imageFileName = input_file.substr(0, input_file.length() - 4) + "_SOLUTION_" + to_string(static_cast<int>(ceil(hc.bestDistance))) + ".png";
+    // ofstream outputCoords(fileNameCoords);
 
-    if (!outputCoords.is_open()) {
-        cout << "Error opening output coordinate file." << endl;
-        return 1;
-    }
+    // if (!outputCoords.is_open()) {
+    //     cout << "Error opening output coordinate file." << endl;
+    //     return 1;
+    // }
 
-    // giving the filename 
-    outputCoords << imageFileName << endl;
+    // // giving the filename 
+    // outputCoords << imageFileName << endl;
 
 
-    for (int i = 0; i < final_path_coordinates.size(); i++) {
-        outputCoords << final_path_coordinates[i].x << " " << final_path_coordinates[i].y << endl;
-    }
+    // for (int i = 0; i < final_path_coordinates.size(); i++) {
+    //     outputCoords << final_path_coordinates[i].x << " " << final_path_coordinates[i].y << endl;
+    // }
 
-    outputCoords.close();
+    // outputCoords.close();
 
 
     /* WRITING TO OUTPUT INDEX FILE */
 
-    string fileName = input_file.substr(0, input_file.length() - 4) + "_SOLUTION_" + to_string(static_cast<int>(ceil(hc.bestDistance))) + ".txt";
-    ofstream outputFile(fileName);
+    // string fileName = input_file.substr(0, input_file.length() - 4) + "_SOLUTION_" + to_string(static_cast<int>(ceil(hc.bestDistance))) + ".txt";
+    // ofstream outputFile(fileName);
 
 
-    if (!outputFile.is_open()) {
-        cout << "Error opening output file." << endl;
-        return 1;
-    }
+    // if (!outputFile.is_open()) {
+    //     cout << "Error opening output file." << endl;
+    //     return 1;
+    // }
 
-    outputFile << "1 ";
+    // outputFile << "1 ";
 
-    for (int i = 1; i < total_coordinates.size(); i++) {
-        auto it = find(total_coordinates.begin(), total_coordinates.end(), hc.bestPath[i]);
-        if (it != total_coordinates.end()) {
-            int index = distance(total_coordinates.begin(), it);
-            outputFile << index + 1 << " ";
-        }
+    // for (int i = 1; i < total_coordinates.size(); i++) {
+    //     auto it = find(total_coordinates.begin(), total_coordinates.end(), hc.bestPath[i]);
+    //     if (it != total_coordinates.end()) {
+    //         int index = distance(total_coordinates.begin(), it);
+    //         outputFile << index + 1 << " ";
+    //     }
        
-    }
+    // }
 
-    outputFile << "1" << endl;
+    // outputFile << "1" << endl;
 
-    outputFile.close();
+    // outputFile.close();
 
     
 
-    cout << "Route written to disk as " << fileName << endl;
+    // cout << "Route written to disk as " << fileName << endl;
     
-    cout << "Image of route written to disk as " << imageFileName << endl;
+    // cout << "Image of route written to disk as " << imageFileName << endl;
 
-    // command to run our python code
-    string command = "python3 path_image.py";
+    // // command to run our python code
+    // string command = "python3 path_image.py";
 
-    int result = system(command.c_str());
+    // int result = system(command.c_str());
 
 
 
