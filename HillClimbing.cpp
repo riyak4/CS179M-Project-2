@@ -21,8 +21,6 @@ vector<Coordinate> HillClimbing::restartPath(vector<Coordinate>& total) {
   
   // don't shuffle the landing pad coord in
   shuffle(newpath.begin()+1, newpath.end(), g);
-  // append the landing pad coord in to circle back
-  newpath.push_back({total[0].x, total[0].y});
 
   return newpath;
 }

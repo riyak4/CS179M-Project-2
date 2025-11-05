@@ -78,7 +78,7 @@ vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinate
     float temp_distance = numeric_limits<float>::max();
     vector<int> labels = kmeans(total_coordinates, droneNum, 100, temp_centroids);
 
-    for (int i =0; i<labels.size(); i++) {
+    for (int i =0; i<labels.size(); i++) { 
         allPaths[labels[i]].push_back(total_coordinates[i]);
     }
 
