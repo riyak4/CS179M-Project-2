@@ -267,33 +267,238 @@ int main(){
 
     /* WRITING TO OUTPUT INDEX FILE */
 
-    // string fileName = input_file.substr(0, input_file.length() - 4) + "_SOLUTION_" + to_string(static_cast<int>(ceil(hc.bestDistance))) + ".txt";
-    // ofstream outputFile(fileName);
+    int choice;
+    bool continueAsking = true;
+    string writtenConfirmation = "Writing ";
+
+    while (continueAsking) {
+        cout << "Please select your choice 1 to 4: ";
+        cin >> choice;
+        if(cin.fail()) {
+            cin.clear(); // clear the fail state
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+            cout << "Invalid input. Please enter a number between 1 and 4." << endl;
+            continue;
+        }
+        switch(choice) {
+            case 1: {
+                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1.distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk";
+                ofstream outputFile(fileName);
 
 
-    // if (!outputFile.is_open()) {
-    //     cout << "Error opening output file." << endl;
-    //     return 1;
-    // }
+                if (!outputFile.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
 
-    // outputFile << "1 ";
+                for (int i = 0; i < drone1.path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone1.path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile << index + 1 << " ";
+                    }
+                }
+                outputFile.close();
+                continueAsking = false;
+                break;
+            }
+            case 2: {
+                // first drone file
+                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone2[0].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                ofstream outputFile(fileName);
 
-    // for (int i = 1; i < total_coordinates.size(); i++) {
-    //     auto it = find(total_coordinates.begin(), total_coordinates.end(), hc.bestPath[i]);
-    //     if (it != total_coordinates.end()) {
-    //         int index = distance(total_coordinates.begin(), it);
-    //         outputFile << index + 1 << " ";
-    //     }
-       
-    // }
 
-    // outputFile << "1" << endl;
+                if (!outputFile.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
 
-    // outputFile.close();
+                for (int i = 0; i < drone2[0].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone2[0].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile << index + 1 << " ";
+                    }
+                }
+                outputFile.close();
 
-    
+                // second drone file
+                fileName = input_file.substr(0, input_file.length() - 4) + "_2_SOLUTION_" + to_string(static_cast<int>(ceil(drone2[1].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk";
+                ofstream outputFile2(fileName);
 
-    // cout << "Route written to disk as " << fileName << endl;
+
+                if (!outputFile2.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone2[1].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone2[1].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile2 << index + 1 << " ";
+                    }
+                }
+                outputFile2.close();
+                continueAsking = false;
+                break;
+            }
+            case 3: {
+                // first drone file
+                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[0].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                ofstream outputFile(fileName);
+
+
+                if (!outputFile.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone3[0].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone3[0].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile << index + 1 << " ";
+                    }
+                }
+                outputFile.close();
+
+                // second drone file
+                fileName = input_file.substr(0, input_file.length() - 4) + "_2_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[1].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                ofstream outputFile2(fileName);
+
+
+                if (!outputFile2.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone3[1].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone3[1].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile2 << index + 1 << " ";
+                    }
+                }
+                outputFile2.close();
+
+                // third drone file
+                fileName = input_file.substr(0, input_file.length() - 4) + "_3_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[2].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk";
+                ofstream outputFile3(fileName);
+
+
+                if (!outputFile3.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone3[2].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone3[2].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile3 << index + 1 << " ";
+                    }
+                }
+                outputFile3.close();
+                continueAsking = false;
+                break;
+            }
+            case 4: {
+                // first drone file
+                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[0].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                ofstream outputFile(fileName);
+
+
+                if (!outputFile.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone4[0].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone4[0].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile << index + 1 << " ";
+                    }
+                }
+                outputFile.close();
+
+                // second drone file
+                fileName = input_file.substr(0, input_file.length() - 4) + "_2_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[1].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                ofstream outputFile2(fileName);
+
+
+                if (!outputFile2.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone4[1].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone4[1].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile2 << index + 1 << " ";
+                    }
+                }
+                outputFile2.close();
+
+                // third drone file
+                fileName = input_file.substr(0, input_file.length() - 4) + "_3_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[2].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                ofstream outputFile3(fileName);
+
+
+                if (!outputFile3.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone4[2].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone4[2].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile3 << index + 1 << " ";
+                    }
+                }
+                outputFile3.close();
+
+                // fourth drone file
+                fileName = input_file.substr(0, input_file.length() - 4) + "_4_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[3].distance))) + ".txt";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk";
+                ofstream outputFile4(fileName);
+
+
+                if (!outputFile4.is_open()) {
+                    cout << "Error opening output file." << endl;
+                    return 1;
+                }
+
+                for (int i = 0; i < drone4[3].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone4[3].path[i]);
+                    if (it != total_coordinates.end()) {
+                        int index = distance(total_coordinates.begin(), it);
+                        outputFile4 << index + 1 << " ";
+                    }
+                }
+                outputFile4.close();
+                continueAsking = false;
+                break;
+            }
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                continue;
+        }
+    }
+
+    cout << writtenConfirmation << endl;
     
     // cout << "Image of route written to disk as " << imageFileName << endl;
 
