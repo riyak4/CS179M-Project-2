@@ -16,9 +16,9 @@
 
 using namespace std;
 
-vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations){
+vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector<Coordinate>& centroids) {
     int n = points.size();
-    vector<Coordinate> centroids;
+    centroids.clear();
     vector<int> labels(n, -1);
     HillClimbing cluster;
 
@@ -69,6 +69,32 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations){
     }
 
     return labels;
+}
+
+vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinates, HillClimbing& hc, vector<Coordinate>& temp_centroids) {
+    vector<Drone> finalAllDrones;
+    temp_centroids.clear();
+    vector<vector<Coordinate>> allPaths;
+    float temp_distance = numeric_limits<float>::max();
+    vector<int> labels = kmeans(total_coordinates, droneNum, 100, temp_centroids);
+    
+    for (int i =0; i<labels.size(); i++) {
+        allPaths[labels[i]].push_back(total_coordinates[i]);
+    }
+
+    for (int j =0; j<allPaths.size(); j++){
+        vector<Coordinate> current_path_coordinates = hc.restartPath(allPaths[j]);
+        vector<Coordinate> temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
+
+        Drone drone(temp_best_path, temp_centroids[j], temp_distance);
+        finalAllDrones.push_back(drone);
+
+        // resetting temp variables for next drone
+        temp_distance = numeric_limits<float>::max();
+    }
+
+    return finalAllDrones;
+
 }
 
 int main(){
@@ -157,7 +183,9 @@ int main(){
 
     // temperary variables for drone object
     float temp_distance = numeric_limits<float>::max();
+
     Coordinate temp_centroid = {0.0, 0.0};
+    vector<Coordinate> temp_centroids;
     vector<Coordinate> temp_best_path;
 
     //-------------doing drone 1 path outside for loop --------------------
