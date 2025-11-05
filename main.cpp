@@ -195,11 +195,11 @@ int main(){
     // testing path's total distance and trying to swap to find better path
     temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
 
-    float sumX;
-    float sumY;
-    for (const auto& coord : hc.bestPath) {
-        sumX += coord.x;
-        sumY += coord.y;
+    float sumX = 0.0;
+    float sumY = 0.0;
+    for (int i =0; i<temp_best_path.size(); i++) {
+        sumX += temp_best_path[i].x;
+        sumY += temp_best_path[i].y;
     }
 
     temp_centroid = {sumX / temp_best_path.size(), sumY / temp_best_path.size()};
@@ -209,29 +209,37 @@ int main(){
     temp_distance = numeric_limits<float>::max();
     temp_centroid = {0.0, 0.0};
     temp_best_path.clear();
+
+    cout << "1) If you are using 1 drone(s), the total route will be " << (ceil(drone1.distance)) << " meters" << endl;
+    cout << "     i. Landing pad 1 should be at [" << drone1.centroid.x << ", " << drone1.centroid.y << "], serving " << drone1.path.size() << " locations, route is " << (ceil(drone1.distance)) << " meters" << endl;
     //----------------------------------------------------------------------
 
-    //for loop for looping through 2-4 drones 
-    // for (int droneNum = 2; droneNum <= 4; droneNum++) {
-        
-    // }
+    // //-------------doing 2 drones --------------------
+    // vector<Drone> drone2 = TotalDronePaths(2, total_coordinates, hc, temp_centroids);
+    // float sumDistance = drone2[0].distance + drone2[1].distance;
+    // cout << "2) If you are using 2 drone(s), the total route will be " << (ceil(sumDistance)) << " meters" << endl;
+    // cout << "     i. Landing pad 1 should be at [" << drone2[0].centroid.x << ", " << drone2[0].centroid.y << "], serving " << drone2[0].path.size() << " locations, route is " << (ceil(drone2[0].distance)) << " meters" << endl;
+    // cout << "     ii. Landing pad 2 should be at [" << drone2[1].centroid.x << ", " << drone2[1].centroid.y << "], serving " << drone2[1].path.size() << " locations, route is " << (ceil(drone2[1].distance)) << " meters" << endl;
+    // //--------------------------------------
 
-    
-    cout << "\n\nStarting paths for 2 drones..." << endl;
-    vector<Drone> Drone2 = TotalDronePaths(2, total_coordinates, hc, temp_centroids);
-    cout << "Completed paths for 2 drones." << endl;
-    //this_thread::sleep_for(chrono::milliseconds(500));
+    // //-------------doing 3 drones --------------------
+    // vector<Drone> drone3 = TotalDronePaths(3, total_coordinates, hc, temp_centroids);
+    // sumDistance = drone3[0].distance + drone3[1].distance + drone3[2].distance;
+    // cout << "3) If you are using 3 drone(s), the total route will be " << (ceil(sumDistance)) << " meters" << endl;
+    // cout << "     i. Landing pad 1 should be at [" << drone3[0].centroid.x << ", " << drone3[0].centroid.y << "], serving " << drone3[0].path.size() << " locations, route is " << (ceil(drone3[0].distance)) << " meters" << endl;
+    // cout << "     ii. Landing pad 2 should be at [" << drone3[1].centroid.x << ", " << drone3[1].centroid.y << "], serving " << drone3[1].path.size() << " locations, route is " << (ceil(drone3[1].distance)) << " meters" << endl;
+    // cout << "     iii. Landing pad 3 should be at [" << drone3[2].centroid.x << ", " << drone3[2].centroid.y << "], serving " << drone3[2].path.size() << " locations, route is " << (ceil(drone3[2].distance)) << " meters" << endl;
+    // //--------------------------------------
 
-    cout << "\n\nStarting paths for 3 drones..." << endl;
-    vector<Drone> Drone3 = TotalDronePaths(3, total_coordinates, hc, temp_centroids);
-    cout << "Completed paths for 3 drones." << endl;
-    //this_thread::sleep_for(chrono::milliseconds(500));
-
-    cout << "\n\nStarting paths for 4 drones..." << endl;
-    vector<Drone> Drone4 = TotalDronePaths(4, total_coordinates, hc, temp_centroids);
-    cout << "Completed paths for 4 drones." << endl;
-    //this_thread::sleep_for(chrono::milliseconds(500));
-
+    // //-------------doing 4 drones --------------------
+    // vector<Drone> drone4 = TotalDronePaths(4, total_coordinates, hc, temp_centroids);
+    // sumDistance = drone4[0].distance + drone4[1].distance + drone4[2].distance + drone4[3].distance;
+    // cout << "4) If you are using 4 drone(s), the total route will be " << (ceil(sumDistance)) << " meters" << endl;
+    // cout << "     i. Landing pad 1 should be at [" << drone4[0].centroid.x << ", " << drone4[0].centroid.y << "], serving " << drone4[0].path.size() << " locations, route is " << (ceil(drone4[0].distance)) << " meters" << endl;
+    // cout << "     ii. Landing pad 2 should be at [" << drone4[1].centroid.x << ", " << drone4[1].centroid.y << "], serving " << drone4[1].path.size() << " locations, route is " << (ceil(drone4[1].distance)) << " meters" << endl;
+    // cout << "     iii. Landing pad 3 should be at [" << drone4[2].centroid.x << ", " << drone4[2].centroid.y << "], serving " << drone4[2].path.size() << " locations, route is " << (ceil(drone4[2].distance)) << " meters" << endl;
+    // cout << "     iv. Landing pad 4 should be at [" << drone4[3].centroid.x << ", " << drone4[3].centroid.y << "], serving " << drone4[3].path.size() << " locations, route is " << (ceil(drone4[3].distance)) << " meters" << endl;
+    // //--------------------------------------
    
     cout << endl;
 

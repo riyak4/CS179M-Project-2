@@ -61,7 +61,7 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
         }
 
       }
-      cout << "done with i = " << i << endl;
+      // cout << "done with i = " << i << endl;
     }
 
   
