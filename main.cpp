@@ -74,10 +74,10 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
 vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinates, HillClimbing& hc, vector<Coordinate>& temp_centroids) {
     vector<Drone> finalAllDrones;
     temp_centroids.clear();
-    vector<vector<Coordinate>> allPaths;
+    vector<vector<Coordinate>> allPaths(droneNum);
     float temp_distance = numeric_limits<float>::max();
     vector<int> labels = kmeans(total_coordinates, droneNum, 100, temp_centroids);
-    
+
     for (int i =0; i<labels.size(); i++) {
         allPaths[labels[i]].push_back(total_coordinates[i]);
     }
@@ -211,11 +211,26 @@ int main(){
     temp_best_path.clear();
     //----------------------------------------------------------------------
 
-    // for loop for looping through 2-4 drones 
-    for (int droneNum = 2; droneNum <= 4; droneNum++) {
+    //for loop for looping through 2-4 drones 
+    // for (int droneNum = 2; droneNum <= 4; droneNum++) {
         
-    }
-    this_thread::sleep_for(chrono::milliseconds(500));
+    // }
+
+    
+    cout << "\n\nStarting paths for 2 drones..." << endl;
+    vector<Drone> Drone2 = TotalDronePaths(2, total_coordinates, hc, temp_centroids);
+    cout << "Completed paths for 2 drones." << endl;
+    //this_thread::sleep_for(chrono::milliseconds(500));
+
+    cout << "\n\nStarting paths for 3 drones..." << endl;
+    vector<Drone> Drone3 = TotalDronePaths(3, total_coordinates, hc, temp_centroids);
+    cout << "Completed paths for 3 drones." << endl;
+    //this_thread::sleep_for(chrono::milliseconds(500));
+
+    cout << "\n\nStarting paths for 4 drones..." << endl;
+    vector<Drone> Drone4 = TotalDronePaths(4, total_coordinates, hc, temp_centroids);
+    cout << "Completed paths for 4 drones." << endl;
+    //this_thread::sleep_for(chrono::milliseconds(500));
 
    
     cout << endl;
