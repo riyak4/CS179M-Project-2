@@ -11,6 +11,7 @@
 // //imported a thread unfortunately so that 'ENTER' key can stop while loop on windows & macOS
 #include <thread>
 #include <chrono>
+#include <iomanip>
 #include <atomic>
 #include <limits>
 
@@ -122,6 +123,7 @@ int main(){
     //take in file of coordinates as input (use locations.txt as example input file)
     cout << "Enter the name of file: ";
     cin >> input_file;
+    
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     //set the file name from commandline to file name variable
@@ -150,6 +152,10 @@ int main(){
         return 1;
     }
 
+    auto now = chrono::system_clock::now();
+    auto future = now + chrono::minutes(5);
+
+    time_t future_time = chrono::system_clock::to_time_t(future);
 
     //each line in the file goes into a temp x & y coord
     while(file >> temp_x_coord >> temp_y_coord){
@@ -179,7 +185,7 @@ int main(){
 
 
     // starting print statement 
-    cout << "There are " << total_coordinates.size() << " nodes: Solutions will be available by DON'T FORGET TO FIGURE OUT" << endl;
+    cout << "There are " << total_coordinates.size() << " nodes: Solutions will be available by " << put_time(localtime(&future_time), "%H:%M") << endl;
 
     // temperary variables for drone object
     float temp_distance = numeric_limits<float>::max();

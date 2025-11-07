@@ -1,7 +1,8 @@
 #include "hillClimbing.h"
-//#include "Problem.h"
 #include <iostream>
 #include <algorithm>
+
+
 
 
 vector<Coordinate> HillClimbing::restartPath(vector<Coordinate>& total) {
