@@ -22,18 +22,34 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
     centroids.clear();
     vector<int> labels(n, -1);
     HillClimbing cluster;
+    
+    float xMax = numeric_limits<float>::min();
+    float xMin = numeric_limits<float>::max();
+    float yMax = numeric_limits<float>::min();
+    float yMin = numeric_limits<float>::max();
+
+    //getting random points for centroids to start 
+    for (int i = 0; i < n; i++) {
+        if(points[i].x > xMax) xMax = points[i].x;
+        if(points[i].x < yMin) xMin = points[i].x;
+        if(points[i].y > yMax) yMax = points[i].y;
+        if(points[i].y < yMin) yMin = points[i].y;
+    }
 
     for (int i = 0; i < k; ++i) {
-        centroids.push_back(points[rand() % n]);
+        float randomY = yMin + (yMax - yMin)*(static_cast<float>(rand() % RAND_MAX));
+        float randomX = xMin + (xMax - xMin)*(static_cast<float>(rand() % RAND_MAX));
+        centroids.push_back({randomX, randomY});
     }
 
     for (int iter = 0; iter < max_iterations; ++iter) {
-        bool changed = false;
+        bool changed = false; // to keep track of if cluster was changed or not, if not then we done 
 
         for (int i = 0; i < n; ++i) {
             float min_dist = numeric_limits<float>::max();
             int best_cluster = -1;
 
+            // finding best cluster for the current location based on Euclidean distance 
             for (int j = 0; j < k; ++j) {
                 float dist = cluster.computeEuclideanDistance(points[i], centroids[j]);
                 if (dist < min_dist) {
@@ -41,7 +57,8 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
                     best_cluster = j;
                 }
             }
-
+            
+            // updating label and initially declaring that cluster has been changed 
             if (labels[i] != best_cluster) {
                 labels[i] = best_cluster;
                 changed = true;
@@ -49,28 +66,30 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         }
 
         if (!changed) break;
+        // breaks if 'changed' is still false = cluster did not change and location is already at best point 
 
         vector<Coordinate> new_centroids(k, {0.0f, 0.0f});
         vector<int> counts(k, 0);
 
+        // following 2 for loops - setting new centroids of averages from all locations in clumps 
         for (int i = 0; i < n; ++i) {
-            new_centroids[labels[i]].x += points[i].x;
+            new_centroids[labels[i]].x += points[i].x; //going to centroid with label of ith location
             new_centroids[labels[i]].y += points[i].y;
             counts[labels[i]]++;
         }
 
-        for (int j = 0; j < k; ++j) {
+        for (int j = 0; j < k; ++j) { //doing it for each centroid 
             if (counts[j] > 0) {
                 new_centroids[j].x /= counts[j];
                 new_centroids[j].y /= counts[j];
             }
         }
 
-        centroids = new_centroids;
+        centroids = new_centroids; //updating centroids for new loop iteration 
     }
 
-    return labels;
-}
+    return labels; //return drone assignments in a vector 
+} 
 
 vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinates, HillClimbing& hc, vector<Coordinate>& temp_centroids) {
     vector<Drone> finalAllDrones;
