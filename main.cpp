@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib> 
+#include <iterator>
 
 
 // //imported a thread unfortunately so that 'ENTER' key can stop while loop on windows & macOS
@@ -218,29 +219,30 @@ int main(){
     vector<Coordinate> temp_best_path;
 
     //-------------doing drone 1 path outside for loop --------------------
-    current_path_coordinates = hc.restartPath(total_coordinates);
+    // current_path_coordinates = hc.restartPath(total_coordinates);
 
     
-    // testing path's total distance and trying to swap to find better path
-    temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
+    // // testing path's total distance and trying to swap to find better path
+    // temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
 
-    float sumX = 0.0;
-    float sumY = 0.0;
-    for (int i =0; i<temp_best_path.size(); i++) {
-        sumX += temp_best_path[i].x;
-        sumY += temp_best_path[i].y;
-    }
+    // float sumX = 0.0;
+    // float sumY = 0.0;
+    // for (int i =0; i<temp_best_path.size(); i++) {
+    //     sumX += temp_best_path[i].x;
+    //     sumY += temp_best_path[i].y;
+    // }
 
-    temp_centroid = {sumX / temp_best_path.size(), sumY / temp_best_path.size()};
-    Drone drone1(temp_best_path, temp_centroid, temp_distance);
+    // temp_centroid = {sumX / temp_best_path.size(), sumY / temp_best_path.size()};
+    // Drone drone1(temp_best_path, temp_centroid, temp_distance);
      
-    // resetting temp variables for next drone
-    temp_distance = numeric_limits<float>::max();
-    temp_centroid = {0.0, 0.0};
-    temp_best_path.clear();
+    // // resetting temp variables for next drone
+    // temp_distance = numeric_limits<float>::max();
+    // temp_centroid = {0.0, 0.0};
+    // temp_best_path.clear();
 
-    cout << "1) If you are using 1 drone(s), the total route will be " << (ceil(drone1.distance)) << " meters" << endl;
-    cout << "     i. Landing pad 1 should be at [" << drone1.centroid.x << ", " << drone1.centroid.y << "], serving " << drone1.path.size() << " locations, route is " << (ceil(drone1.distance)) << " meters" << endl;
+    vector<Drone> drone1 = TotalDronePaths(1, total_coordinates, hc, temp_centroids);
+    cout << "1) If you are using 1 drone(s), the total route will be " << (ceil(drone1[0].distance)) << " meters" << endl;
+    cout << "     i. Landing pad 1 should be at [" << drone1[0].centroid.x << ", " << drone1[0].centroid.y << "], serving " << drone1[0].path.size() << " locations, route is " << (ceil(drone1[0].distance)) << " meters" << endl;
     //----------------------------------------------------------------------
 
     //-------------doing 2 drones --------------------
@@ -311,7 +313,7 @@ int main(){
         }
         switch(choice) {
             case 1: {
-                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1.distance))) + ".txt";
+                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1[0].distance))) + ".txt";
                 writtenConfirmation = writtenConfirmation + fileName + " to disk";
                 ofstream outputFile(fileName);
 
@@ -321,8 +323,8 @@ int main(){
                     return 1;
                 }
 
-                for (int i = 0; i < drone1.path.size(); i++) {
-                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone1.path[i]);
+                for (int i = 0; i < drone1[0].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone1[0].path[i]);
                     if (it != total_coordinates.end()) {
                         int index = distance(total_coordinates.begin(), it);
                         outputFile << index + 1 << " ";
