@@ -1,4 +1,4 @@
-#include "hillClimbing.h"
+#include "HillClimbing.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,6 +14,9 @@
 #include <iomanip>
 #include <atomic>
 #include <limits>
+
+
+// included to create our coordinate visualization
 
 using namespace std;
 
@@ -276,6 +279,7 @@ int main(){
     int choice;
     bool continueAsking = true;
     string writtenConfirmation = "Writing ";
+    string imageName = "";
 
     while (continueAsking) {
         cout << "Please select your choice 1 to 4: ";
@@ -289,8 +293,11 @@ int main(){
         switch(choice) {
             case 1: {
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1.distance))) + ".txt";
-                writtenConfirmation = writtenConfirmation + fileName + " to disk";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1.distance))) + ".png";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
+
+                
 
 
                 if (!outputFile.is_open()) {
@@ -306,13 +313,36 @@ int main(){
                     }
                 }
                 outputFile.close();
+
+
+                
+                /* PYTHON VISUALIZATION */
+                string fileNameCoords = "coords.txt";
+                ofstream outputCoords(fileNameCoords);
+
+                outputCoords << drone1.centroid.x << " " << drone1.centroid.y << endl;
+
+                for (int i = 0; i < drone1.path.size(); i++) {
+                    outputCoords << drone1.path[i].x << " " << drone1.path[i].y << endl;
+                }
+
+                outputCoords << drone1.centroid.x << " " << drone1.centroid.y << endl;
+
+                outputCoords << "-1" << endl;
+
+                outputCoords.close();
+
                 continueAsking = false;
+
+                
+
                 break;
             }
             case 2: {
                 // first drone file
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone2[0].distance))) + ".txt";
-                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone2[0].distance))) + ".png";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
 
@@ -349,13 +379,40 @@ int main(){
                     }
                 }
                 outputFile2.close();
+
+
+
+                /* PYTHON VISUALIZATION */
+                string fileNameCoords = "coords.txt";
+                ofstream outputCoords(fileNameCoords);
+
+                for (int j = 0; j < drone2.size(); j++) {
+                    outputCoords << drone2[j].centroid.x << " " << drone2[j].centroid.y << endl;
+
+                    for (int i = 0; i < drone2[j].path.size(); i++) {
+                        outputCoords << drone2[j].path[i].x << " " << drone2[j].path[i].y << endl;
+                    }
+
+                    outputCoords << drone2[j].centroid.x << " " << drone2[j].centroid.y << endl;
+
+                    outputCoords << "-1" << endl;
+                    
+                }
+
+                
+
+                outputCoords.close();
+
+
+                
                 continueAsking = false;
                 break;
             }
             case 3: {
                 // first drone file
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[0].distance))) + ".txt";
-                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[0].distance))) + ".png";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
 
@@ -412,13 +469,43 @@ int main(){
                     }
                 }
                 outputFile3.close();
+
+
+
+
+
+
+                /* PYTHON VISUALIZATION */
+                string fileNameCoords = "coords.txt";
+                ofstream outputCoords(fileNameCoords);
+
+                for (int j = 0; j < drone3.size(); j++) {
+                    outputCoords << drone3[j].centroid.x << " " << drone3[j].centroid.y << endl;
+
+                    for (int i = 0; i < drone3[j].path.size(); i++) {
+                        outputCoords << drone3[j].path[i].x << " " << drone3[j].path[i].y << endl;
+                    }
+
+                    outputCoords << drone3[j].centroid.x << " " << drone3[j].centroid.y << endl;
+
+                    outputCoords << "-1" << endl;
+                    
+                }
+
+                
+
+                outputCoords.close();
+
+
+
                 continueAsking = false;
                 break;
             }
             case 4: {
                 // first drone file
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[0].distance))) + ".txt";
-                writtenConfirmation = writtenConfirmation + fileName + ", ";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[0].distance))) + ".png";
+                writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
 
@@ -495,6 +582,32 @@ int main(){
                     }
                 }
                 outputFile4.close();
+
+
+                /* PYTHON VISUALIZATION */
+                string fileNameCoords = "coords.txt";
+                ofstream outputCoords(fileNameCoords);
+
+                for (int j = 0; j < drone4.size(); j++) {
+                    outputCoords << drone4[j].centroid.x << " " << drone4[j].centroid.y << endl;
+
+                    for (int i = 0; i < drone4[j].path.size(); i++) {
+                        outputCoords << drone4[j].path[i].x << " " << drone4[j].path[i].y << endl;
+                    }
+
+                    outputCoords << drone4[j].centroid.x << " " << drone4[j].centroid.y << endl;
+
+                    outputCoords << "-1" << endl;
+                    
+                }
+
+                
+
+                outputCoords.close();
+
+
+
+
                 continueAsking = false;
                 break;
             }
@@ -505,6 +618,8 @@ int main(){
     }
 
     cout << writtenConfirmation << endl;
+
+
     
     // cout << "Image of route written to disk as " << imageFileName << endl;
 
@@ -512,7 +627,10 @@ int main(){
     // string command = "python3 path_image.py";
 
     // int result = system(command.c_str());
+    // python visualization
+    string command = "python3 path_image.py " + imageName;
 
+    int result = system(command.c_str());
 
 
     return 0;
