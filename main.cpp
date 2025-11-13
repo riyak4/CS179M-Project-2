@@ -36,6 +36,10 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         if(points[i].y < yMin) yMin = points[i].y;
     }
 
+    
+   // srand(time(NULL));
+   srand(static_cast<unsigned>(time(nullptr))); 
+
     for (int i = 0; i < k; ++i) {
         float randomY = yMin + (yMax - yMin)*(static_cast<float>(rand() % RAND_MAX));
         float randomX = xMin + (xMax - xMin)*(static_cast<float>(rand() % RAND_MAX));
