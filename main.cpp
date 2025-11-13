@@ -24,12 +24,12 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
     vector<int> labels(n, -1);
     HillClimbing cluster;
     
+    //getting random points for centroids to start 
     float xMax = numeric_limits<float>::min();
     float xMin = numeric_limits<float>::max();
     float yMax = numeric_limits<float>::min();
     float yMin = numeric_limits<float>::max();
 
-    //getting random points for centroids to start 
     for (int i = 0; i < n; i++) {
         if(points[i].x > xMax) xMax = points[i].x;
         if(points[i].x < yMin) xMin = points[i].x;
@@ -93,6 +93,23 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         centroids = new_centroids; //updating centroids for new loop iteration 
     }
 
+    // calculating all SSE's for debugging after all assignment stuff is done 
+    vector<float> eachSSE(k, 0.0);
+    for(int m = 0; m < n; m++) { //for each point 
+        int label = labels[m]; //getting label or assignment of point 
+        float xDiff = points[m].x - centroids[label].x;
+        float yDiff = points[m].y - centroids[label].y;
+
+        eachSSE[label] += xDiff*xDiff + yDiff*yDiff; //getting sum difference of point and adding it to its respective total 
+        // cout << "    Point " << m << "'s diff: " << xDiff*xDiff + yDiff*yDiff << endl;
+    }
+
+    for (int k = 0; k < eachSSE.size(); k++) { //printing out each SSE result 
+        cout << "Drone " << k << "'s SSE: " << eachSSE[k] << endl;
+        cout << "  Final Centroid: (" << centroids[k].x << ", " << centroids[k].y << ")" << endl;
+    }
+
+
     return labels; //return drone assignments in a vector 
 } 
 
@@ -107,16 +124,19 @@ vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinate
         allPaths[labels[i]].push_back(total_coordinates[i]);
     }
 
-    for (int j =0; j<allPaths.size(); j++){
+    for (int j =0; j < allPaths.size(); j++){
+        // cout << "one " << j << endl;
         vector<Coordinate> current_path_coordinates = hc.restartPath(allPaths[j]);
+        // cout << " in one " << j << endl;
         vector<Coordinate> temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
-
+        // cout << "  two " << j << endl;
         Drone drone(temp_best_path, temp_centroids[j], temp_distance);
         finalAllDrones.push_back(drone);
-
+        // cout << "  three" << j << endl;
         // resetting temp variables for next drone
         temp_distance = numeric_limits<float>::max();
     }
+    // cout << "right before ending" << endl;
 
     return finalAllDrones;
 
