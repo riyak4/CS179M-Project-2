@@ -25,26 +25,32 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
     HillClimbing cluster;
     
     //getting random points for centroids to start 
-    float xMax = numeric_limits<float>::min();
+    float xMax = numeric_limits<float>::lowest();
     float xMin = numeric_limits<float>::max();
-    float yMax = numeric_limits<float>::min();
+    float yMax = numeric_limits<float>::lowest();
     float yMin = numeric_limits<float>::max();
 
     for (int i = 0; i < n; i++) {
         if(points[i].x > xMax) xMax = points[i].x;
-        if(points[i].x < yMin) xMin = points[i].x;
+        if(points[i].x < xMin) xMin = points[i].x;
         if(points[i].y > yMax) yMax = points[i].y;
         if(points[i].y < yMin) yMin = points[i].y;
     }
+    
+    // cout << "xMax: " << xMax << endl;
+    // cout << "xMin: " << xMin << endl;
+    // cout << "yMax: " << yMax << endl;
+    // cout << "yMin: " << yMin << endl;
 
     
    // srand(time(NULL));
    srand(static_cast<unsigned>(time(nullptr))); 
 
     for (int i = 0; i < k; ++i) {
-        float randomY = yMin + (yMax - yMin)*(static_cast<float>(rand() % RAND_MAX));
-        float randomX = xMin + (xMax - xMin)*(static_cast<float>(rand() % RAND_MAX));
+        float randomY = yMin + (yMax - yMin)*(static_cast<float>(rand() / RAND_MAX));
+        float randomX = xMin + (xMax - xMin)*(static_cast<float>(rand() / RAND_MAX));
         centroids.push_back({randomX, randomY});
+        // cout << " Initial Center " << i << ": (" << randomX << ", " << randomY << ")" << endl;
     }
 
     for (int iter = 0; iter < max_iterations; ++iter) {
@@ -91,6 +97,10 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         }
 
         centroids = new_centroids; //updating centroids for new loop iteration 
+        // cout << " Iter: " << iter << ": " << endl;
+        // for (int x = 0; x < centroids.size(); x++) {
+        //     cout << "  Updated Center " << x << ": (" << centroids[x].x << ", " << centroids[x].y << ")" << endl;
+        // }
     }
 
     // calculating all SSE's for debugging after all assignment stuff is done 
@@ -109,7 +119,6 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         cout << "  Final Centroid: (" << centroids[k].x << ", " << centroids[k].y << ")" << endl;
     }
 
-
     return labels; //return drone assignments in a vector 
 } 
 
@@ -127,7 +136,6 @@ vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinate
     for (int j =0; j < allPaths.size(); j++){
         // cout << "one " << j << endl;
         vector<Coordinate> current_path_coordinates = hc.restartPath(allPaths[j]);
-        // cout << " in one " << j << endl;
         vector<Coordinate> temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
         // cout << "  two " << j << endl;
         Drone drone(temp_best_path, temp_centroids[j], temp_distance);

@@ -74,6 +74,10 @@ float HillClimbing::getTotalDistance(vector<Coordinate>& final_path) {
     float final_dist = 0.0f;
     int row;
     int col;
+    if (final_path.size() == 0) { //breaking to account for empty drones 
+      return final_dist;
+    }
+
     for (int i = 0; i < final_path.size()-1; i++) {
         row = coordinate_indexes[final_path[i]];
         col = coordinate_indexes[final_path[i+1]];
