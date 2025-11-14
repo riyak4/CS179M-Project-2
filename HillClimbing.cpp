@@ -39,15 +39,21 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
   
   // swapping 
   int pathSize = newpath.size();
+  int a = 0;
+
+  // if (pathSize  < 2000) {
+  //   a = 2;
+  // } think +7 works for 2500 but not for 3000
+
 
   
     // 2 for loops to go through each pair for swapping, using 2-opt loop
     for (int i = 1; i < pathSize - 2; i = i + 2) {
 
-      for (int j = i + 1; j < pathSize - 1; j= j+ 2) {
-
+      for (int j = i + 1; j < pathSize - 1; j= j + 2) {
     
         reverse(newpath.begin() + i, newpath.begin() + j + 1);
+        // swap(newpath[i], newpath[j]);
         distance = getTotalDistance(newpath);
         if (distance < temp_distance) {
           temp_distance = distance;
@@ -57,6 +63,7 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
         } else {
           // swap back if no improvement
           reverse(newpath.begin() + i, newpath.begin() + j + 1);
+          // swap(newpath[i], newpath[j]);
         }
 
       }
