@@ -23,7 +23,7 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
     centroids.clear();
     vector<int> labels(n, -1);
     HillClimbing cluster;
-    
+
     //getting random points for centroids to start 
     float xMax = numeric_limits<float>::lowest();
     float xMin = numeric_limits<float>::max();
@@ -37,20 +37,18 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         if(points[i].y < yMin) yMin = points[i].y;
     }
     
-    // cout << "xMax: " << xMax << endl;
-    // cout << "xMin: " << xMin << endl;
-    // cout << "yMax: " << yMax << endl;
-    // cout << "yMin: " << yMin << endl;
-
+    for (int i = 0; i < k; ++i) { // finding k random initial centroids 
+        
+        // randomly finding different x and y values each time 
+        random_device rd;
+        mt19937 g(rd()); 
     
-   // srand(time(NULL));
-   srand(static_cast<unsigned>(time(nullptr))); 
+        uniform_real_distribution<float> diffX(xMin, xMax);
+        uniform_real_distribution<float> diffY(yMin, yMax);
+        float randomX = diffX(g);
+        float randomY = diffY(g);
 
-    for (int i = 0; i < k; ++i) {
-        float randomY = yMin + (yMax - yMin)*(static_cast<float>(rand() / RAND_MAX));
-        float randomX = xMin + (xMax - xMin)*(static_cast<float>(rand() / RAND_MAX));
         centroids.push_back({randomX, randomY});
-        // cout << " Initial Center " << i << ": (" << randomX << ", " << randomY << ")" << endl;
     }
 
     for (int iter = 0; iter < max_iterations; ++iter) {
@@ -97,10 +95,6 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         }
 
         centroids = new_centroids; //updating centroids for new loop iteration 
-        // cout << " Iter: " << iter << ": " << endl;
-        // for (int x = 0; x < centroids.size(); x++) {
-        //     cout << "  Updated Center " << x << ": (" << centroids[x].x << ", " << centroids[x].y << ")" << endl;
-        // }
     }
 
     // calculating all SSE's for debugging after all assignment stuff is done 
@@ -115,8 +109,8 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
     }
 
     for (int k = 0; k < eachSSE.size(); k++) { //printing out each SSE result 
-        cout << "Drone " << k << "'s SSE: " << eachSSE[k] << endl;
-        cout << "  Final Centroid: (" << centroids[k].x << ", " << centroids[k].y << ")" << endl;
+        // cout << "Drone " << k << "'s SSE: " << eachSSE[k] << endl;
+        // cout << "  Final Centroid: (" << centroids[k].x << ", " << centroids[k].y << ")" << endl;
     }
 
     return labels; //return drone assignments in a vector 
