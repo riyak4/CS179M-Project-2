@@ -1,7 +1,7 @@
 import random
 import math
 
-num_points = 50
+num_points = 200
 points = []
 
 cx, cy = 5.0, 5.0   # center
@@ -16,7 +16,7 @@ for _ in range(num_points):
     points.append((x, y))
 
 # Save to file
-with open("50PointUnitCircleAt55.txt", "w") as f:
+with open("Circle5_5.txt", "w") as f:
     for x, y in points:
         f.write(f"{x} {y}\n")
 
