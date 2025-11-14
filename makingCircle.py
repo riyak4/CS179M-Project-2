@@ -4,7 +4,7 @@ import math
 num_points = 200
 points = []
 
-cx, cy = 5.0, 5.0   # center
+cx, cy = 1.0, 1.0   # center
 r = 1.0             # radius
 
 for _ in range(num_points):
@@ -16,7 +16,7 @@ for _ in range(num_points):
     points.append((x, y))
 
 # Save to file
-with open("Circle5_5.txt", "w") as f:
+with open("Circle1_1.txt", "w") as f:
     for x, y in points:
         f.write(f"{x} {y}\n")
 
