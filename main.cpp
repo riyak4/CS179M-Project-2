@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib> 
+#include <iterator>
 
 
 // //imported a thread unfortunately so that 'ENTER' key can stop while loop on windows & macOS
@@ -26,17 +27,41 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
     vector<int> labels(n, -1);
     HillClimbing cluster;
 
-    for (int i = 0; i < k; ++i) {
-        centroids.push_back(points[rand() % n]);
+    //getting random points for centroids to start 
+    float xMax = numeric_limits<float>::lowest();
+    float xMin = numeric_limits<float>::max();
+    float yMax = numeric_limits<float>::lowest();
+    float yMin = numeric_limits<float>::max();
+
+    for (int i = 0; i < n; i++) {
+        if(points[i].x > xMax) xMax = points[i].x;
+        if(points[i].x < xMin) xMin = points[i].x;
+        if(points[i].y > yMax) yMax = points[i].y;
+        if(points[i].y < yMin) yMin = points[i].y;
+    }
+    
+    for (int i = 0; i < k; ++i) { // finding k random initial centroids 
+        
+        // randomly finding different x and y values each time 
+        random_device rd;
+        mt19937 g(rd()); 
+    
+        uniform_real_distribution<float> diffX(xMin, xMax);
+        uniform_real_distribution<float> diffY(yMin, yMax);
+        float randomX = diffX(g);
+        float randomY = diffY(g);
+
+        centroids.push_back({randomX, randomY});
     }
 
     for (int iter = 0; iter < max_iterations; ++iter) {
-        bool changed = false;
+        bool changed = false; // to keep track of if cluster was changed or not, if not then we done 
 
         for (int i = 0; i < n; ++i) {
             float min_dist = numeric_limits<float>::max();
             int best_cluster = -1;
 
+            // finding best cluster for the current location based on Euclidean distance 
             for (int j = 0; j < k; ++j) {
                 float dist = cluster.computeEuclideanDistance(points[i], centroids[j]);
                 if (dist < min_dist) {
@@ -44,7 +69,8 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
                     best_cluster = j;
                 }
             }
-
+            
+            // updating label and initially declaring that cluster has been changed 
             if (labels[i] != best_cluster) {
                 labels[i] = best_cluster;
                 changed = true;
@@ -52,28 +78,46 @@ vector<int> kmeans(vector<Coordinate>& points, int k, int max_iterations, vector
         }
 
         if (!changed) break;
+        // breaks if 'changed' is still false = cluster did not change and location is already at best point 
 
         vector<Coordinate> new_centroids(k, {0.0f, 0.0f});
         vector<int> counts(k, 0);
 
+        // following 2 for loops - setting new centroids of averages from all locations in clumps 
         for (int i = 0; i < n; ++i) {
-            new_centroids[labels[i]].x += points[i].x;
+            new_centroids[labels[i]].x += points[i].x; //going to centroid with label of ith location
             new_centroids[labels[i]].y += points[i].y;
             counts[labels[i]]++;
         }
 
-        for (int j = 0; j < k; ++j) {
+        for (int j = 0; j < k; ++j) { //doing it for each centroid 
             if (counts[j] > 0) {
                 new_centroids[j].x /= counts[j];
                 new_centroids[j].y /= counts[j];
             }
         }
 
-        centroids = new_centroids;
+        centroids = new_centroids; //updating centroids for new loop iteration 
     }
 
-    return labels;
-}
+    // calculating all SSE's for debugging after all assignment stuff is done 
+    vector<float> eachSSE(k, 0.0);
+    for(int m = 0; m < n; m++) { //for each point 
+        int label = labels[m]; //getting label or assignment of point 
+        float xDiff = points[m].x - centroids[label].x;
+        float yDiff = points[m].y - centroids[label].y;
+
+        eachSSE[label] += xDiff*xDiff + yDiff*yDiff; //getting sum difference of point and adding it to its respective total 
+        // cout << "    Point " << m << "'s diff: " << xDiff*xDiff + yDiff*yDiff << endl;
+    }
+
+    for (int k = 0; k < eachSSE.size(); k++) { //printing out each SSE result 
+        // cout << "Drone " << k << "'s SSE: " << eachSSE[k] << endl;
+        // cout << "  Final Centroid: (" << centroids[k].x << ", " << centroids[k].y << ")" << endl;
+    }
+
+    return labels; //return drone assignments in a vector 
+} 
 
 vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinates, HillClimbing& hc, vector<Coordinate>& temp_centroids) {
     vector<Drone> finalAllDrones;
@@ -86,16 +130,18 @@ vector<Drone> TotalDronePaths(int droneNum, vector<Coordinate>& total_coordinate
         allPaths[labels[i]].push_back(total_coordinates[i]);
     }
 
-    for (int j =0; j<allPaths.size(); j++){
+    for (int j =0; j < allPaths.size(); j++){
+        // cout << "one " << j << endl;
         vector<Coordinate> current_path_coordinates = hc.restartPath(allPaths[j]);
         vector<Coordinate> temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
-
+        // cout << "  two " << j << endl;
         Drone drone(temp_best_path, temp_centroids[j], temp_distance);
         finalAllDrones.push_back(drone);
-
+        // cout << "  three" << j << endl;
         // resetting temp variables for next drone
         temp_distance = numeric_limits<float>::max();
     }
+    // cout << "right before ending" << endl;
 
     return finalAllDrones;
 
@@ -169,7 +215,7 @@ int main(){
 
       // checks number of locations does not exceed 4026
     int num_locations = total_coordinates.size();
-    if (num_locations > 4096) {
+    if (num_locations > 6000) {
         cout << "Error. Number of locations exceeds 4096." << endl;
         return 1;
     }
@@ -198,29 +244,30 @@ int main(){
     vector<Coordinate> temp_best_path;
 
     //-------------doing drone 1 path outside for loop --------------------
-    current_path_coordinates = hc.restartPath(total_coordinates);
+    // current_path_coordinates = hc.restartPath(total_coordinates);
 
     
-    // testing path's total distance and trying to swap to find better path
-    temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
+    // // testing path's total distance and trying to swap to find better path
+    // temp_best_path = hc.makingPath(current_path_coordinates, temp_distance);
 
-    float sumX = 0.0;
-    float sumY = 0.0;
-    for (int i =0; i<temp_best_path.size(); i++) {
-        sumX += temp_best_path[i].x;
-        sumY += temp_best_path[i].y;
-    }
+    // float sumX = 0.0;
+    // float sumY = 0.0;
+    // for (int i =0; i<temp_best_path.size(); i++) {
+    //     sumX += temp_best_path[i].x;
+    //     sumY += temp_best_path[i].y;
+    // }
 
-    temp_centroid = {sumX / temp_best_path.size(), sumY / temp_best_path.size()};
-    Drone drone1(temp_best_path, temp_centroid, temp_distance);
+    // temp_centroid = {sumX / temp_best_path.size(), sumY / temp_best_path.size()};
+    // Drone drone1(temp_best_path, temp_centroid, temp_distance);
      
-    // resetting temp variables for next drone
-    temp_distance = numeric_limits<float>::max();
-    temp_centroid = {0.0, 0.0};
-    temp_best_path.clear();
+    // // resetting temp variables for next drone
+    // temp_distance = numeric_limits<float>::max();
+    // temp_centroid = {0.0, 0.0};
+    // temp_best_path.clear();
 
-    cout << "1) If you are using 1 drone(s), the total route will be " << (ceil(drone1.distance)) << " meters" << endl;
-    cout << "     i. Landing pad 1 should be at [" << drone1.centroid.x << ", " << drone1.centroid.y << "], serving " << drone1.path.size() << " locations, route is " << (ceil(drone1.distance)) << " meters" << endl;
+    vector<Drone> drone1 = TotalDronePaths(1, total_coordinates, hc, temp_centroids);
+    cout << "1) If you are using 1 drone(s), the total route will be " << (ceil(drone1[0].distance)) << " meters" << endl;
+    cout << "     i. Landing pad 1 should be at [" << drone1[0].centroid.x << ", " << drone1[0].centroid.y << "], serving " << drone1[0].path.size() << " locations, route is " << (ceil(drone1[0].distance)) << " meters" << endl;
     //----------------------------------------------------------------------
 
     //-------------doing 2 drones --------------------
@@ -305,8 +352,8 @@ int main(){
                     return 1;
                 }
 
-                for (int i = 0; i < drone1.path.size(); i++) {
-                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone1.path[i]);
+                for (int i = 0; i < drone1[0].path.size(); i++) {
+                    auto it = find(total_coordinates.begin(), total_coordinates.end(), drone1[0].path[i]);
                     if (it != total_coordinates.end()) {
                         int index = distance(total_coordinates.begin(), it);
                         outputFile << index + 1 << " ";

@@ -39,15 +39,39 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
   
   // swapping 
   int pathSize = newpath.size();
+  int a = 2;
+  int b = 2;
+
+  // a variety of combinations to make our algorithm run within 5 minutes regardless of pathSize
+  if (pathSize <= 1800) {
+    
+  } else if (pathSize <= 2500) {
+    b = 8;
+  } else if (pathSize <= 3000) {
+    b = 10;
+  } else if (pathSize <= 3500) {
+    a = 6;
+    b = 10;
+  } else if (pathSize <= 4500) {
+    a = 7;
+    b = 13;
+  } else if (pathSize <= 5000) {
+    a = 9;
+    b = 15;
+  } else {
+    a = 10;
+    b = 18;
+  }
+
 
   
     // 2 for loops to go through each pair for swapping, using 2-opt loop
-    for (int i = 1; i < pathSize - 2; i = i + 2) {
+    for (int i = 1; i < pathSize - 2; i = i + a) {
 
-      for (int j = i + 1; j < pathSize - 1; j= j+ 2) {
-
+      for (int j = i + 1; j < pathSize - 1; j= j + b) {
     
         reverse(newpath.begin() + i, newpath.begin() + j + 1);
+        // swap(newpath[i], newpath[j]);
         distance = getTotalDistance(newpath);
         if (distance < temp_distance) {
           temp_distance = distance;
@@ -57,6 +81,7 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
         } else {
           // swap back if no improvement
           reverse(newpath.begin() + i, newpath.begin() + j + 1);
+          // swap(newpath[i], newpath[j]);
         }
 
       }
@@ -74,6 +99,10 @@ float HillClimbing::getTotalDistance(vector<Coordinate>& final_path) {
     float final_dist = 0.0f;
     int row;
     int col;
+    if (final_path.size() == 0) { //breaking to account for empty drones 
+      return final_dist;
+    }
+
     for (int i = 0; i < final_path.size()-1; i++) {
         row = coordinate_indexes[final_path[i]];
         col = coordinate_indexes[final_path[i+1]];
