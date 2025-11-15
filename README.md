@@ -12,6 +12,12 @@ CS179M Project 2 - Shortest Drone Path Algorithm with Clusters
 **Circle5_5: ** one unit circle w/ center at (5_5)  [200 points]
 **Circle10_10: ** one unit circle w/center at (10, 10)  [200 points]
 
+**Circle1000: ** one circle (r = 10) centered at (0, 0)  [1000 points]
+**Circle2000: ** one circle (r = 10) centered at (0, 0)  [2000 points]
+**Circle3000: ** one circle (r = 10) centered at (0, 0)  [3000 points]
+**Circle4000: ** one circle (r = 10) centered at (0, 0)  [4000 points]
+**Circle5000: ** one circle (r = 10) centered at (0, 0)  [5000 points]
+
 **2Circles: ** 2 unit circles [centers at (0,0), (5,5)], unscrambled, made for advanced testing  [400 points]
 **2CirclesCloseLevel1: ** 2 unit circles [centers at (0,0), (3,3)], unscrambled, made for advanced testing  [400 points]
 **2CirclesCloseLevel2: ** 2 unit circles [centers at (0,0), (2,2)], unscrambled, made for advanced testing  [400 points]

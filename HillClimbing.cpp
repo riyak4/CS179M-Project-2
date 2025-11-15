@@ -46,7 +46,7 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
   if (pathSize <= 1800) {
     
   } else if (pathSize <= 2500) {
-    b = 7;
+    b = 8;
   } else if (pathSize <= 3000) {
     b = 10;
   } else if (pathSize <= 3500) {

@@ -1,11 +1,11 @@
 import random
 import math
 
-num_points = 200
+num_points = 2000
 points = []
 
-cx, cy = 1.0, 1.0   # center
-r = 1.0             # radius
+cx, cy = 0.0, 0.0   # center
+r = 10.0             # radius
 
 for _ in range(num_points):
     angle = random.uniform(0, 2 * math.pi)  # random angle 0–360°
@@ -16,7 +16,7 @@ for _ in range(num_points):
     points.append((x, y))
 
 # Save to file
-with open("Circle1_1.txt", "w") as f:
+with open("Circle2000.txt", "w") as f:
     for x, y in points:
         f.write(f"{x} {y}\n")
 
