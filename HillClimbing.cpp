@@ -1,4 +1,4 @@
-#include "hillClimbing.h"
+#include "HillClimbing.h"
 #include <iostream>
 #include <algorithm>
 
