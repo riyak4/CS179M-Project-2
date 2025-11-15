@@ -339,8 +339,8 @@ int main(){
         }
         switch(choice) {
             case 1: {
-                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1.distance))) + ".txt";
-                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1.distance))) + ".png";
+                string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone1[0].distance))) + ".txt";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_OVERALL_SOLUTION"+ ".png";
                 writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
@@ -367,13 +367,13 @@ int main(){
                 string fileNameCoords = "coords.txt";
                 ofstream outputCoords(fileNameCoords);
 
-                outputCoords << drone1.centroid.x << " " << drone1.centroid.y << endl;
+                outputCoords << drone1[0].centroid.x << " " << drone1[0].centroid.y << endl;
 
-                for (int i = 0; i < drone1.path.size(); i++) {
-                    outputCoords << drone1.path[i].x << " " << drone1.path[i].y << endl;
+                for (int i = 0; i < drone1[0].path.size(); i++) {
+                    outputCoords << drone1[0].path[i].x << " " << drone1[0].path[i].y << endl;
                 }
 
-                outputCoords << drone1.centroid.x << " " << drone1.centroid.y << endl;
+                outputCoords << drone1[0].centroid.x << " " << drone1[0].centroid.y << endl;
 
                 outputCoords << "-1" << endl;
 
@@ -388,7 +388,7 @@ int main(){
             case 2: {
                 // first drone file
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone2[0].distance))) + ".txt";
-                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone2[0].distance))) + ".png";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_OVERALL_SOLUTION"+ ".png";
                 writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
@@ -458,7 +458,7 @@ int main(){
             case 3: {
                 // first drone file
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[0].distance))) + ".txt";
-                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone3[0].distance))) + ".png";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_OVERALL_SOLUTION"+ ".png";
                 writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
@@ -551,7 +551,7 @@ int main(){
             case 4: {
                 // first drone file
                 string fileName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[0].distance))) + ".txt";
-                imageName = input_file.substr(0, input_file.length() - 4) + "_1_SOLUTION_" + to_string(static_cast<int>(ceil(drone4[0].distance))) + ".png";
+                imageName = input_file.substr(0, input_file.length() - 4) + "_OVERALL_SOLUTION"+ ".png";
                 writtenConfirmation = writtenConfirmation + fileName + " to disk" + "\n" + writtenConfirmation + imageName + " to disk"; 
                 ofstream outputFile(fileName);
 
