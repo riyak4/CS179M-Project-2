@@ -212,7 +212,7 @@ int main(){
 
       // checks number of locations does not exceed 4026
     int num_locations = total_coordinates.size();
-    if (num_locations > 4096) {
+    if (num_locations > 6000) {
         cout << "Error. Number of locations exceeds 4096." << endl;
         return 1;
     }

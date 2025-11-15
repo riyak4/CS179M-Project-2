@@ -39,18 +39,36 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
   
   // swapping 
   int pathSize = newpath.size();
-  int a = 0;
+  int a = 2;
+  int b = 2;
 
-  // if (pathSize  < 2000) {
-  //   a = 2;
-  // } think +7 works for 2500 but not for 3000
+  // a variety of combinations to make our algorithm run within 5 minutes regardless of pathSize
+  if (pathSize <= 1800) {
+    
+  } else if (pathSize <= 2500) {
+    b = 7;
+  } else if (pathSize <= 3000) {
+    b = 10;
+  } else if (pathSize <= 3500) {
+    a = 6;
+    b = 10;
+  } else if (pathSize <= 4500) {
+    a = 7;
+    b = 13;
+  } else if (pathSize <= 5000) {
+    a = 9;
+    b = 15;
+  } else {
+    a = 10;
+    b = 18;
+  }
 
 
   
     // 2 for loops to go through each pair for swapping, using 2-opt loop
-    for (int i = 1; i < pathSize - 2; i = i + 2) {
+    for (int i = 1; i < pathSize - 2; i = i + a) {
 
-      for (int j = i + 1; j < pathSize - 1; j= j + 2) {
+      for (int j = i + 1; j < pathSize - 1; j= j + b) {
     
         reverse(newpath.begin() + i, newpath.begin() + j + 1);
         // swap(newpath[i], newpath[j]);
