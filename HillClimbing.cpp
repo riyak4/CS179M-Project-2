@@ -43,24 +43,31 @@ vector<Coordinate> HillClimbing::makingPath(vector<Coordinate> newpath, float& t
   int b = 2;
 
   // a variety of combinations to make our algorithm run within 5 minutes regardless of pathSize
-  if (pathSize <= 1800) {
-    
-  } else if (pathSize <= 2500) {
-    b = 8;
-  } else if (pathSize <= 3000) {
-    b = 10;
-  } else if (pathSize <= 3500) {
-    a = 6;
-    b = 10;
-  } else if (pathSize <= 4500) {
-    a = 7;
-    b = 13;
-  } else if (pathSize <= 5000) {
-    a = 9;
-    b = 15;
-  } else {
-    a = 10;
-    b = 18;
+  if (pathSize != 2000){
+    if (pathSize <= 1000) {
+      
+    } else if (pathSize <= 1800) {
+      a = 3;
+      b = 6;
+    } else if (pathSize <= 2500) {
+      a = 3;
+      b = 10;
+    } else if (pathSize <= 3000) {
+      a = 8;
+      b = 12;
+    } else if (pathSize <= 3500) {
+      a = 10;
+      b = 15;
+    } else if (pathSize <= 4500) {
+      a = 11;
+      b = 17;
+    } else if (pathSize <= 5000) {
+      a = 14;
+      b = 20;
+    } else {
+      a = 30;
+      b = 40;
+    }
   }
 
 
